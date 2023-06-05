@@ -1,0 +1,136 @@
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    #box {
+        width: 650px;
+        height: 400px;
+        margin: 50px auto;
+        border: 1px solid red;
+        position: relative;
+    }
+
+    #content {
+        width: 650px;
+        height: 350px;
+        position: relative;
+        background-image: url("../source/check.jpeg");
+        background-size: 650px 350px;
+    }
+
+    #shadow {
+        height: 40px;
+        width: 40px;
+        position: absolute;
+        background-color: aliceblue;
+        top: 0;
+        left: 0;
+
+        /* top: 210px; */
+        /* left: 300px; */
+    }
+
+    #tip {
+        height: 40px;
+        width: 40px;
+        position: absolute;
+        left: 0;
+        top: 0;
+        background-image: url("../source/check.jpeg");
+        background-size: 650px 350px;
+        z-index: 10;
+
+        /* top: 210px; */
+        /* background-position: -300px -210px; */
+    }
+
+    #block {
+        height: 40px;
+        width: 40px;
+        position: absolute;
+        left: 0;
+        top: 355px;
+        background-image: url("../source/check.jpeg");
+        background-size: 650px 350px;
+
+        /* left :?;   ===    -300px */
+        /* background-position: -300px -210px; */
+    }
+</style>
+</head>
+
+<body>
+<div id="box">
+    <div id="content">
+        <div id="shadow"></div>
+        <div id="tip"></div>
+    </div>
+    <div id="block"></div>
+</div>
+<script>
+
+    var oBox= document.querySelector('#box');
+    var oShadow = document.querySelector('#shadow');
+    var oContent = document.querySelector('#content');
+    var oTip = document.querySelector('#tip');
+    var oBlock = document.querySelector('#block');
+
+    var maxTop = oContent.clientHeight - oShadow.offsetHeight;
+    var maxLeft = oContent.clientWidth - oShadow.offsetWidth;
+
+
+    setPosition();
+
+    function setPosition() {
+        var randomTop = Math.round(Math.random() * maxTop);
+        var randomLeft = Math.round(Math.random() * maxLeft);
+
+        oShadow.style.left = `${randomLeft}px`;
+        oShadow.style.top = `${randomTop}px`;
+        oTip.style.top = `${randomTop}px`;
+
+        oTip.style.backgroundPosition = `${-randomLeft}px ${-randomTop}px`;
+        oBlock.style.backgroundPosition = `${-randomLeft}px ${-randomTop}px`;
+    }
+
+
+
+    oBlock.onmousedown = function (e) {
+        var ev = event || e;
+        var startX = ev.x;
+
+        window.onmousemove = function (e) {
+            var ev = event || e;
+            var left = ev.x - startX;
+
+            if (left <= 0) left = 0;
+            if (left >= maxLeft) left = maxLeft;
+
+            oTip.style.left = `${left}px`
+            oBlock.style.left = `${left}px`
+
+        }
+
+        window.onmouseup = function () {
+            window.onmousemove = null;
+            if (Math.abs(oTip.offsetLeft - oShadow.offsetLeft) <= 2) {
+                location.href = 'http://www.baidu.com';
+            } else {
+                oTip.style.left = 0;
+                oBlock.style.left = 0;
+                setPosition();
+            }
+        }
+    }
+
+    window.ondragstart = function () {
+        return false
+    }
+
+    </script>
+
+
+</body>
